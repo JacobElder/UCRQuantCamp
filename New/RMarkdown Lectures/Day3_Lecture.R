@@ -69,7 +69,13 @@ tail(starwars)
 
 class(starwars)
 
-## What kind of class is it?
+## What kind of class is the dataframe?
+
+# You can examine variables by using the dollar sign $
+
+starwars$name
+starwars$height
+starwars$mass
 
 # Check class of name
 
@@ -83,5 +89,7 @@ class(starwars$gender)
 
 ## Are there missing values? What denotes missing values?
 
-## What kind of class is it? What might be a preferable class?
+## What kind of class is it? What might be a preferable class to have gender as for data analysis?
+
+starwars$
 
