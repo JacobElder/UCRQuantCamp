@@ -51,6 +51,54 @@ ggvenn(AB,show_elements=TRUE,stroke_color="Red",
 
 ##############
 
-
+# Pivoting
 
 ##############
+
+setwd("~/Documents/GitHub/UCRQuantCamp/New/RMarkdown Lectures/")
+
+# read_csv will interpret the file as a tibble
+df <- read_csv("ESS10.csv")
+
+# Let's create an iterator within the group and use that to pivot wide to
+shortDf <- df %>% 
+  select(cntry, fairelcc) %>% 
+  group_by(cntry) %>%
+  mutate(sn = 1:n())
+
+# Let's use the country as the ID, the sequential ID as the column,  and fair election variable as the value
+wideDf <- shortDf %>% pivot_wider(id_cols = cntry, names_from = sn, values_from = fairelcc)
+
+# Okay, now let's pivot it back to longer
+longDf <- wideDf %>% pivot_longer(cols = 2:2000, names_to = "sn", values_to = "fairelcc")
+
+# In the last class, we computed the mean per country for fair election...
+# Maybe we want to have people's individual evaluations of fair elections, along with aggregate/country-level averages
+# of fair elections.
+
+# Repeat the replacing of missing values and the mean from last class
+
+df <- df %>% 
+  mutate(fairelcc = replace(fairelcc, fairelcc > 76, NA),
+         medcrgvc = replace(medcrgvc, medcrgvc > 76, NA)
+  )
+
+aveDf <- df %>%
+  group_by(cntry) %>%
+  summarise(fairelccAVE = mean(fairelcc, na.rm=T),
+            medcrgvcAVE = mean(fairelcc, na.rm=T)
+  ) %>%
+  arrange(fairelccAVE, medcrgvcAVE)
+
+# We can then merge the dataframe of averages with the dataframe of all person-level data
+
+# There are different types of joins
+# inner_join(): includes all rows in x and y.
+# 
+# left_join(): includes all rows in x.
+# 
+# right_join(): includes all rows in y.
+# 
+# full_join(): includes all rows in x or y.
+
+mergeDf <- df %>% inner_join(aveDf, by = "cntry")

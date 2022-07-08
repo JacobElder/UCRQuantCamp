@@ -78,10 +78,14 @@ x <- seq(-3, 3, length=1000)
 y <- dnorm(x, mean = 0, sd = .25)
 y # The density at each value along x
 qplot(x = x, y = y, geom = "line",ylab = "Density") +
-  theme_minimal(base_size = 20)
+  theme_minimal(base_size = 20) # qplot is just a "quick" plot... Basically, ggplot2 equivalent of base plot()
+# We will go into more detail about ggplot2 next class
 
 ########################
 
 # Data Wrangling
 
 ########################
+
+
+## TBD ##
