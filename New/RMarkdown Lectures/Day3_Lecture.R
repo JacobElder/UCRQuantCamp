@@ -55,8 +55,6 @@ class(mtcars$mpg)
 
 ## What kind of class is it?
 
-
-
 #######################
 
 # Indexing
@@ -125,9 +123,41 @@ mtcars[mtcars$carb != 4,]
 
 #######################
 
-# Write csv to your working directory
+# There are multiple different file types that could be used. Probably the most commonly used and most efficient
+# are CSVs (comma separated values) which represent your data as text delimited by commas.
+
+# While you may open CSV files in Excel, there are some important to distinctions.
+# CSV is a plain text format with a series of values separated by commas whereas Excel is a binary file that holds information about all the worksheets in a workbook.
+# CSV file can’t perform operations on data while Excel can perform operations on the data.
+# Comparing CSV vs Xlsx, CSV files are faster and also consumes less memory whereas Excel consumes more memory while importing data.
+
+# While less commonly used, you can also read and write text data as tab delimited, semicolon delimited, space delimited, etc.
+
+# There are also proprietary data types for software such as SPSS (.sav), STATA (.dta), SAS (.sas7bdat)
+
+# Write csv to your working directory (comma delimited)
 
 write.csv(mtcars, "mtcars.csv", row.names = F)
+
+# Can also write csv to you working directory that is semicolon delimited
+
+write.table(mtcars, file="mtcarsSC.csv",quote=TRUE, sep = ";")
+
+# Can also write tsv to your working directory
+
+write.table(mtcars, file = "mtcars.tsv", row.names=FALSE, sep="\t")
+
+# To write and import xlsx files, you will need the xlsx package
+
+install.packages('xlsx')     
+library(xlsx)
+write.xlsx(mtcars, file = "mtcars.xlsx", row.names = T)
+
+# The "haven" package will allow you to read and write SPSS files such as .sav, SAS files, and STATA files
+
+install.packages("haven")
+library(haven)
+haven::write_sav(mtcars, "mtcars.sav")
 
 # You can save you workspace as well
 
@@ -156,7 +186,29 @@ df <- read.csv("ESS10.csv",header = T)
 df <- readr::read_csv("ESS10.csv")
 
 # fread 2.5x faster than read_csv
+# fread is fast and efficient but is also cool because it automatically detects the number of columns, rows,
+# and the delimiter! So it will determine if your input is tab separated or comma separated fo example.
 df <- data.table::fread("ESS10.csv")
+
+# Compare the two ways of reading with same function
+mtcars1 <- data.table::fread("mtcars.tsv")
+mtcars2 <- data.table::fread("mtcars.tsv")
+all(mtcars1==mtcars2) # They're the same
+
+# We can also read in that mtcars dataset again as a tsv or as a ; separated dataset
+mtcars <- read.csv("mtcarsSC.csv",header = T, sep = ";")
+
+# Read in the tsv file with readr
+mtcars <- read_tsv("mtcars.tsv")
+
+# Read in the tsv file with base
+mtcars <- read.table("mtcars.tsv", sep = "\t", header = T)
+
+# Importing a sav file from SPSS
+read_sav("ZA5950_v2-0-0.sav")
+
+# Reading in an xlsx file
+dfxlsx <- read.xlsx("mtcars.xlsx", header = T, sheetIndex = 1, row.names = 1)
 
 # I would recommend fread-- You won't notice the difference on small files but for large files like you might see
 # in political science and public policy, it can save you a lot of waiting.
