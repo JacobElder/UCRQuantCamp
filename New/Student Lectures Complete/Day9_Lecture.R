@@ -1,6 +1,6 @@
 library(ggplot2)
 
-setwd("~/Documents/GitHub/UCRQuantCamp/New/RMarkdown Lectures/")
+setwd("~/Documents/GitHub/UCRQuantCamp/New/Student Lectures Complete/")
 
 # read_csv will interpret the file as a tibble
 df <- read_csv("ESS10.csv")
@@ -22,14 +22,78 @@ df <- df %>%
 #####################
 
 p1 <- ggplot(df, aes(x=fairelcc)) + geom_histogram() + theme_minimal()
-
+p1
 
 p2 <- ggplot(df, aes(x=medcrgv, color=gndr, group=gndr)) + geom_histogram(alpha=.1, position="dodge") + theme_classic()
-
+p2
 
 p3 <- ggplot(df, aes(x=gvctzpv, color=gndr, group=gndr)) +
   geom_histogram(aes(y = ..density..),  fill = "white", alpha=.2) +
   geom_density() + theme_void()
+p3
+
+#####################
+
+# Color Palettes
+
+#####################
+
+# Defaults
+
+p4 <- df %>%
+  ggplot() +
+  aes(x = fairelcc, y = medcrgv, shape = gndr, color=cntry) +
+  geom_jitter(alpha = .5) +
+  geom_smooth(method=lm)
+
+# different palette
+
+p4 + scale_colour_brewer(palette = 1)
+
+p4 + scale_colour_brewer(palette = 10)
+
+# install RColorBrewer
+
+install.packages("RColorBrewer")
+library(RColorBrewer)
+display.brewer.all(colorblindFriendly = TRUE)  
+
+p4 + scale_color_brewer(palette = "PuOr")
+p4 + scale_color_brewer(palette = "YlOrRd")
+p4 + scale_color_brewer(palette = "YlOrRd", direction = -1) # flip order
+
+# scale_color_brewer applies to color but can also use scale_fill_brewer() for fill of barplots as well
+
+# find colors you like: https://colorbrewer2.org/#type=sequential&scheme=PuBuGn&n=9
+
+# Can also change colors manually with scale_fill_manual()
+
+# install and load wedanderson
+
+library(wesanderson)
+pal <- wes_palette("FantasticFox1", 10, type = "continuous")
+
+p4 + scale_color_discrete(labels = c("A","B","C","D","E","F","G","H","I","J"), name = "Countries"
+                          )  + 
+  labs(x="Fair Election", y = "Media Criticial", 
+                                    title = "Association Between Free Press\n and Free Election") +
+  scale_shape_discrete(name = "Gender", labels = c("Male","Female")) + 
+  scale_color_manual(values = pal)
+
+install.packages("devtools")
+devtools::install_github("katiejolly/nationalparkcolors")
+library(nationalparkcolors)
+
+numcountries <- 10
+pal <- colorRampPalette(park_palette("DeathValley", 5))(numcountries)
+pal
+
+p4 + scale_color_discrete(labels = c("A","B","C","D","E","F","G","H","I","J"), name = "Countries"
+)  + 
+  labs(x="Fair Election", y = "Media Criticial", 
+       title = "Association Between Free Press\n and Free Election") +
+  scale_shape_discrete(name = "Gender", labels = c("Male","Female")) + 
+  scale_color_manual(values = pal)
 
 #####################
 
